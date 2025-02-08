@@ -29,6 +29,24 @@ app.get('/api', async (req, res) => {
   }
 });
 
+app.get('/api/ai', async (req, res) => {
+  const { betlog } = req.query; // Get query parameter from the request
+
+  try {
+    // Fetch data from an external API with query parameters
+    const response = await fetch(`https://kaiz-apis.gleeze.com/api/deepseek-v3?ask=${betlog}&uid=1`);
+    const data = await response.json();
+    const result = data.response;
+    console.log(result);
+
+    // Send the fetched data back to the client
+    res.json({ message: `Data fetched for userId ${betlog}`, result });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Failed to fetch data from external API' });
+  }
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`API is running on http://localhost:${port}`);
